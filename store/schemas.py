@@ -37,7 +37,7 @@ class ProductSchema(Schema):
     images: List[ProductImageSchema]
 
 
-class ItemSchema:
+class ItemSchema(Schema):
     product: ProductSchema
     quantity: int
 

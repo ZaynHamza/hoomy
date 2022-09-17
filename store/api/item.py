@@ -8,11 +8,10 @@ from django.db.models import Sum, Avg
 from rest_framework import status
 
 
-item_router = Router(tags=['item'])
+# item_router = Router(tags=['item'])
 
 
-@item_router.get("/get-all-items", response=List[ItemSchema])
-def get_all(request):
-    items = Item.objects.all()
-
-    return 200, items
+# @item_router.get("/get-all-items", response=List[ItemSchema])
+# def get_all(request):
+#     items = Item.objects.all()
+#     return 200, items

@@ -19,7 +19,7 @@ from ninja import NinjaAPI
 
 from restauth.api import auth_router
 from store.api import account_router, category_router, product_router, cart_router
-
+from store.api.color import color_router
 
 api = NinjaAPI(
     title='Hoomy Furniture Store',
@@ -32,6 +32,7 @@ api.add_router('product/', product_router)
 api.add_router('cart/', cart_router)
 # api.add_router('item/', item_router)
 api.add_router('auth/', auth_router)
+api.add_router('color/', color_router)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
