@@ -17,7 +17,6 @@ class CategorySchema(Schema):
 
 
 class ColorSchema(Schema):
-    # title: str
     color_code: str
 
 
@@ -36,7 +35,7 @@ class ProductSchema(Schema):
     is_available: bool = True
     show_hide: bool = True
     is_featured: bool = False
-    images: List[ProductImageSchema]
+    product_image: List[ProductImageSchema]
 
 
 # class ProductImageSchema(Schema):
