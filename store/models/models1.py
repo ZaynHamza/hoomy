@@ -63,7 +63,7 @@ class Product(models.Model):
     banner = models.ImageField(upload_to="banners/")
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    color = models.ManyToManyField('store.Color', verbose_name='colors', related_name='products')
+    colors = models.ManyToManyField('store.Color', verbose_name='colors', related_name='products')
     price = models.IntegerField()
     is_available = models.BooleanField(default=True)
     show_hide = models.BooleanField(default=True)
@@ -71,8 +71,8 @@ class Product(models.Model):
 
 
 class ProductImage(models.Model):
-    post = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
-    images = models.FileField(upload_to='images/')
+    post = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_image')
+    images = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return self.post.title

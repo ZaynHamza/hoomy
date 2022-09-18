@@ -16,6 +16,7 @@ class TokenOut(Schema):
 
 
 class AccountOut(Schema):
+    id: int
     first_name: str
     last_name: str
     email: EmailStr

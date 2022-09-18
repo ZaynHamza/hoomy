@@ -1,5 +1,6 @@
 from ninja import Schema
 from typing import List
+from .models import Color
 
 
 class FourOFourOut(Schema):
@@ -16,11 +17,12 @@ class CategorySchema(Schema):
 
 
 class ColorSchema(Schema):
+    # title: str
     color_code: str
 
 
 class ProductImageSchema(Schema):
-    image: str
+    images: str
 
 
 class ProductSchema(Schema):
@@ -35,6 +37,11 @@ class ProductSchema(Schema):
     show_hide: bool = True
     is_featured: bool = False
     images: List[ProductImageSchema]
+
+
+# class ProductImageSchema(Schema):
+#     post: ProductSchema
+#     images: List[str]
 
 
 class ItemSchema(Schema):

@@ -18,8 +18,8 @@ from django.urls import path
 from ninja import NinjaAPI
 
 from restauth.api import auth_router
-from store.api import account_router, category_router, product_router, cart_router
-from store.api.color import color_router
+from store.api import account_router, category_router, product_router, cart_router, color_router
+# from store.api.color import color_router
 
 api = NinjaAPI(
     title='Hoomy Furniture Store',
