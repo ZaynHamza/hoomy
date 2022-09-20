@@ -20,6 +20,11 @@ class ColorSchema(Schema):
     color_code: str
 
 
+class ColorIn(Schema):
+    title: str
+    color_code: str
+
+
 class ProductImageSchema(Schema):
     images: str
 
@@ -38,17 +43,12 @@ class ProductSchema(Schema):
     product_image: List[ProductImageSchema]
 
 
-# class ProductImageSchema(Schema):
-#     post: ProductSchema
-#     images: List[str]
-
-
 class ItemSchema(Schema):
     product: ProductSchema
     quantity: int
 
 
-class Cart(Schema):
+class CartSchema(Schema):
     id: int
     item: List[ItemSchema]
     is_ordered: bool = False

@@ -60,7 +60,7 @@ class Color(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=50)
-    banner = models.ImageField(upload_to="banners/")
+    banner = models.ImageField(upload_to="media/banners/")
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     colors = models.ManyToManyField('store.Color', verbose_name='colors', related_name='products')
@@ -72,7 +72,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     post = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_image')
-    images = models.ImageField(upload_to='images/')
+    images = models.ImageField(upload_to='media/images/')
 
     def __str__(self):
         return self.post.title

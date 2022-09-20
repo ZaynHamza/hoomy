@@ -1,6 +1,6 @@
 from ninja import Router
-from store.models import Product, ProductImage
-from store.schemas import ProductSchema, ProductImageSchema
+from store.models import Product
+from store.schemas import ProductSchema
 from typing import List
 
 
