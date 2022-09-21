@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
-# from store.models import Account
-
 
 class EmailAccountManager(UserManager):
     def get_by_natural_key(self, username):
@@ -22,7 +20,10 @@ class EmailAccountManager(UserManager):
 
         user.save(using=self._db)
 
-        # Account.objects.create(user=user, profile_pic=profile_pic)
+        # Had to place the import here, because it causes circular import if I did at the top
+        from store.models import Account
+
+        Account.objects.create(user=user, profile_pic=profile_pic)
         return user
 
     def create_superuser(self, email, password):

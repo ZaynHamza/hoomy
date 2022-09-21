@@ -49,14 +49,12 @@ class ItemSchema(Schema):
 
 
 class CartSchema(Schema):
-    id: int
     item: List[ItemSchema]
     is_ordered: bool = False
 
 
 # There must be CartIn and CartOut
 class CartIn(Schema):
-    id: int
     item: List[ItemSchema]
     is_ordered: bool = False
 

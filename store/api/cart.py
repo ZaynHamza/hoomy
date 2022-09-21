@@ -7,7 +7,10 @@ from store.schemas import AccountOut, FourOFourOut
 from typing import List
 from django.db.models import Sum, Avg
 from rest_framework import status
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 cart_router = Router(tags=['cart'])
 # show cart
@@ -26,7 +29,23 @@ cart_router = Router(tags=['cart'])
 #         cart = Cart.objects.create()
 #         return cart
 
-@cart_router.post('/to_cart')
-def add_to_cart(request, cart: CartSchema):
+@cart_router.post('/to_cart', response={201: CartSchema})
+def create_cart(request, data: CartSchema):
+    # cart = Cart.objects.create(user_id=request.user.id)
+    cart = Cart.objects.create(**data.dict())
+    # for attribute, value in data.dict().items():
+    #     setattr(cart, attribute, value)
+    # cart.save()
     return cart
 
+
+@cart_router.put('/update_cart/{cart_id}', response={200: CartSchema, 404: FourOFourOut})
+def update_cart(request, cart_id: int, data: CartSchema):
+    try:
+        cart = Cart.objects.get(pk=cart_id)
+        for attribute, value in data.dict().items():
+            setattr(cart, attribute, value)
+        cart.save()
+        return 200, cart
+    except Cart.DoesNotExist as e:
+        return 404, {"message": "Cart does not exist"}
