@@ -32,7 +32,7 @@ cart_router = Router(tags=['cart'])
 @cart_router.post('/to_cart', response={201: CartSchema})
 def create_cart(request, data: CartSchema):
     # cart = Cart.objects.create(user_id=request.user.id)
-    cart = Cart.objects.create(**data.dict())
+    cart = Cart.objects.set(**data.dict())
     # for attribute, value in data.dict().items():
     #     setattr(cart, attribute, value)
     # cart.save()

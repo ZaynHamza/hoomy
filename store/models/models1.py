@@ -1,4 +1,8 @@
+import uuid
+
+from PIL import Image
 from django.db import models
+from hoomy.utils.models import Entity
 from django.contrib.auth import get_user_model
 
 
@@ -60,7 +64,7 @@ class Color(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=50)
-    banner = models.ImageField(upload_to="media/banners/")
+    banner = models.ImageField(upload_to="banners/")
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     colors = models.ManyToManyField('store.Color', verbose_name='colors', related_name='products')
@@ -71,17 +75,30 @@ class Product(models.Model):
 
 
 class ProductImage(models.Model):
-    post = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_image')
-    images = models.ImageField(upload_to='media/images/')
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_image')
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
-        return self.post.title
+        return self.product.title
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+        if img.height > 500 or img.width > 500:
+            output_size = (500, 500)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
 
 class Item(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+
+    def __str__(self):
+        return self.product.title
 
 
 class Cart(models.Model):

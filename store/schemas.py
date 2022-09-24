@@ -1,10 +1,14 @@
 from ninja import Schema
 from typing import List
-from .models import Color
+from pydantic import UUID4
 
 
 class FourOFourOut(Schema):
     detail: str
+
+
+class UUIDSchema(Schema):
+    id: UUID4
 
 
 class AccountOut(Schema):
@@ -46,6 +50,17 @@ class ProductSchema(Schema):
 class ItemSchema(Schema):
     product: ProductSchema
     quantity: int
+
+
+# Newly added
+class ItemCreate(Schema):
+    product_id: UUID4
+    item_qty: int
+
+
+class ItemOut(UUIDSchema, ItemSchema):
+    pass
+# End
 
 
 class CartSchema(Schema):

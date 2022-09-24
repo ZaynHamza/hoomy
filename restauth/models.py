@@ -40,6 +40,7 @@ class EmailAccountManager(UserManager):
 class EmailAccount(AbstractUser, models.Model):
     username = models.NOT_PROVIDED
     email = models.EmailField('Email Address', unique=True)
+    # profile_pic = models.ImageField(upload_to='/prof-pic')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
