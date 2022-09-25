@@ -30,11 +30,11 @@ class ColorIn(Schema):
 
 
 class ProductImageSchema(Schema):
-    images: str
+    image: str
 
 
 class ProductSchema(Schema):
-    id: int
+    # id: int
     title: str
     banner: str
     description: str = None
