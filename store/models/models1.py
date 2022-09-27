@@ -126,3 +126,4 @@ class Cart(models.Model):
 # class Wishlist(models.Model):
 #     user = models.ForeignKey(to=User, verbose_name='user', related_name='favs', on_delete=models.CASCADE)
 #     product = models.ForeignKey(Product, )
+

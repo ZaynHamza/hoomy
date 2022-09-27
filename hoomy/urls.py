@@ -26,7 +26,7 @@ from store.api import category_router, product_router, cart_router, color_router
 api = NinjaAPI(
     title='Hoomy Furniture Store',
     version='0.1',
-    csrf=True,
+    csrf=False,
 )
 # api.add_router('account/', account_router)
 api.add_router('category/', category_router)
