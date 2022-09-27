@@ -1,7 +1,7 @@
 from ninja import Router
 from ninja.security import django_auth
 from django.shortcuts import get_object_or_404
-from store.models import Account, Category
+from store.models import Category
 from store.schemas import CategorySchema
 from typing import List
 from django.db.models import Sum, Avg

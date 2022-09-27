@@ -21,9 +21,9 @@ class EmailAccountManager(UserManager):
         user.save(using=self._db)
 
         # Had to place the import here, because it causes circular import if I did at the top
-        from store.models import Account
+        # from store.models import Account
 
-        Account.objects.create(user=user, profile_pic=profile_pic)
+        # Account.objects.create(user=user, profile_pic=profile_pic)
         return user
 
     def create_superuser(self, email, password):
@@ -40,7 +40,7 @@ class EmailAccountManager(UserManager):
 class EmailAccount(AbstractUser, models.Model):
     username = models.NOT_PROVIDED
     email = models.EmailField('Email Address', unique=True)
-    # profile_pic = models.ImageField(upload_to='/prof-pic')
+    profile_pic = models.ImageField(upload_to='prof-pic/')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -49,4 +49,10 @@ class EmailAccount(AbstractUser, models.Model):
 
     def __str__(self):
         return self.email
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return True
 

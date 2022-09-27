@@ -20,17 +20,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from restauth.api import auth_router
-from store.api import account_router, category_router, product_router, cart_router, color_router
+from restauth.authorization import AuthBearer
+from store.api import category_router, product_router, cart_router, color_router
 
 api = NinjaAPI(
     title='Hoomy Furniture Store',
     version='0.1',
     csrf=True,
 )
-api.add_router('account/', account_router)
+# api.add_router('account/', account_router)
 api.add_router('category/', category_router)
 api.add_router('product/', product_router)
-api.add_router('cart/', cart_router)
+api.add_router('cart/', cart_router, auth=AuthBearer())
 # api.add_router('item/', item_router)
 api.add_router('auth/', auth_router)
 api.add_router('color/', color_router)
@@ -42,3 +43,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

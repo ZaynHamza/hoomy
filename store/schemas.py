@@ -1,19 +1,19 @@
 from ninja import Schema
 from typing import List
-from pydantic import UUID4
+# from pydantic import UUID4
 
 
 class FourOFourOut(Schema):
     detail: str
 
 
-class UUIDSchema(Schema):
-    id: UUID4
+# class UUIDSchema(Schema):
+#     id: UUID4
 
 
-class AccountOut(Schema):
-    id: int
-    profile_pic: str = None
+# class AccountOut(Schema):
+#     id: int
+#     profile_pic: str = None
 
 
 class CategorySchema(Schema):
@@ -34,7 +34,7 @@ class ProductImageSchema(Schema):
 
 
 class ProductSchema(Schema):
-    # id: int
+    id: int
     title: str
     banner: str
     description: str = None
@@ -50,32 +50,33 @@ class ProductSchema(Schema):
 class ItemSchema(Schema):
     product: ProductSchema
     quantity: int
+    is_ordered: bool
 
 
 # Newly added
 class ItemCreate(Schema):
-    product_id: UUID4
-    item_qty: int
+    product_id: int
+    quantity: int = 1
 
 
-class ItemOut(UUIDSchema, ItemSchema):
-    pass
+class ItemOut(ItemSchema):
+    id: int
 # End
 
 
-class CartSchema(Schema):
-    item: List[ItemSchema]
-    is_ordered: bool = False
-
-
-# There must be CartIn and CartOut
-class CartIn(Schema):
-    item: List[ItemSchema]
-    is_ordered: bool = False
-
-
-class CartOut(Schema):
-    id: int
-    item: List[ItemSchema]
-    is_ordered: bool = False
+# class CartSchema(Schema):
+#     item: List[ItemSchema]
+#     is_ordered: bool = False
+#
+#
+# # There must be CartIn and CartOut
+# class CartIn(Schema):
+#     item: List[ItemSchema]
+#     is_ordered: bool = False
+#
+#
+# class CartOut(Schema):
+#     id: int
+#     item: List[ItemSchema]
+#     is_ordered: bool = False
 

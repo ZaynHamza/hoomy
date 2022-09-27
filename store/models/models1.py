@@ -42,9 +42,9 @@ Cart
 User = get_user_model()
 
 
-class Account(models.Model):
-    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to="profile_pics/", blank=True)
+# class Account(models.Model):
+#     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+#     profile_pic = models.ImageField(upload_to="profile_pics/", blank=True)
 
 
 class Category(models.Model):
@@ -73,6 +73,11 @@ class Product(models.Model):
     show_hide = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
 
+    is_favorite = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_image')
@@ -93,15 +98,31 @@ class ProductImage(models.Model):
 
 
 class Item(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    user = models.ForeignKey(to=User, verbose_name='user', related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='product', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    is_ordered = models.BooleanField('is ordered', default=False)
 
     def __str__(self):
-        return self.product.title
+        # return self.product.title
+        return f''
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    item = models.ManyToManyField('store.Item', verbose_name='items', related_name='carts')
-    is_ordered = models.BooleanField(default=False)
+    user = models.ForeignKey(to=User, verbose_name='user', related_name='carts', on_delete=models.CASCADE)
+    items = models.ManyToManyField('store.Item', verbose_name='items', related_name='carts')
+    is_ordered = models.BooleanField('is ordered', default=False)
+    # newly added / 26-9-2022
+    total = models.IntegerField('total', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.first_name} + {self.total}"
+
+    @property
+    def cart_total(self):
+        return sum(i.product.price * i.quantity for i in self.items.all())
+
+
+# class Wishlist(models.Model):
+#     user = models.ForeignKey(to=User, verbose_name='user', related_name='favs', on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product, )
