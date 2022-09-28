@@ -17,43 +17,6 @@ User = get_user_model()
 
 cart_router = Router(tags=['cart'])
 
-# show cart
-# checkout is ordered
-
-
-# @cart_router.post('/get_cart/', response={
-#     200: CartOut,
-#     # 404: FourOFourOut,
-# })
-# def get_cart(request, cart_in: CartIn):
-#     cart = Cart.objects.get(id=cart_in.id)
-#     if not cart.is_ordered:
-#         return cart
-#     else:
-#         cart = Cart.objects.create()
-#         return cart
-
-# newly commented / 26-9-2022
-# @cart_router.post('/to_cart', response={201: CartSchema})
-# def create_cart(request, data: CartSchema):
-#     # cart = Cart.objects.create(user_id=request.user.id)
-#     cart = Cart.objects.set(**data.dict())
-#     # for attribute, value in data.dict().items():
-#     #     setattr(cart, attribute, value)
-#     # cart.save()
-#     return cart
-#
-#
-# @cart_router.put('/update_cart/{cart_id}', response={200: CartSchema, 404: FourOFourOut})
-# def update_cart(request, cart_id: int, data: CartSchema):
-#     try:
-#         cart = Cart.objects.get(pk=cart_id)
-#         for attribute, value in data.dict().items():
-#             setattr(cart, attribute, value)
-#         cart.save()
-#         return 200, cart
-#     except Cart.DoesNotExist as e:
-#         return 404, {"message": "Cart does not exist"}
 
 @cart_router.get('cart/', response={
     200: List[ItemOut],
@@ -80,9 +43,10 @@ def add_update_cart(request, item_in: ItemCreate):
     try:
         item = Item.objects.get(product_id=item_in.product_id, user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
                                 is_ordered=False)
-        if item_in.quantity > 0:
-            item.quantity += item_in.quantity
-        item.save()
+        # if item_in.quantity > 0:
+        #     item.quantity = item.quantity
+        # item.save()
+        return 400, {'detail': 'Item is already in cart.'}
     except Item.DoesNotExist:
         if item_in.quantity < 1:
             return 400, {'detail': 'Quantity Value Must be Greater Than Zero'}
@@ -161,14 +125,14 @@ def create_update_order(request):
             item.delete()
 
         cart.items.add(*list_of_difference_items)
-        cart.total = cart.order_total
+        cart.total = cart.cart_total
         cart.save()
         return 200, {'detail': 'order updated successfully!'}
     except Cart.DoesNotExist:
         # order_status, _ = OrderStatus.objects.get_or_create(title='NEW', is_default=True)
         cart = Cart.objects.create(user=user, is_ordered=False)
         cart.items.set(user_items)
-        cart.total = cart.total
+        cart.total = cart.cart_total
         user_items.update(is_ordered=True)
         cart.save()
         return 200, {'detail': 'Order Created Successfully!'}
@@ -182,15 +146,11 @@ def create_update_order(request):
 })
 @check_pk
 def checkout_order(request):
-    # order_status, _ = OrderStatus.objects.get_or_create(title='SHIPPED', is_default=False)
     try:
         cart = Cart.objects.get(user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
-                                 is_ordered=False)
+                                is_ordered=False)
     except Cart.DoesNotExist:
         return 404, {'detail': 'Order Doesn\'t Found'}
-    cart.ordered = True
-    # cart.status = order_status
-    # for k, v in order_in.dict().items():
-    #     setattr(cart, k, v)
+    cart.is_ordered = True
     cart.save()
     return 200, {'detail': 'checkout successfully!'}

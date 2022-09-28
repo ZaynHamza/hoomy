@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from restauth.api import auth_router
 from restauth.authorization import AuthBearer
-from store.api import category_router, product_router, cart_router, color_router
+from store.api import category_router, product_router, cart_router, wishlist_router, color_router
 
 api = NinjaAPI(
     title='Hoomy Furniture Store',
@@ -35,6 +35,7 @@ api.add_router('cart/', cart_router, auth=AuthBearer())
 # api.add_router('item/', item_router)
 api.add_router('auth/', auth_router)
 api.add_router('color/', color_router)
+api.add_router('wishlist/', wishlist_router, auth=AuthBearer())
 
 urlpatterns = [
     path('admin/', admin.site.urls),

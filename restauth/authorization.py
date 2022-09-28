@@ -43,7 +43,6 @@ class AuthBearer(HttpBearer):
     def authenticate(self, request, token):
         try:
             user_pk = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=['HS256'])
-            print(user_pk)
         except JWTError:
             return {'token': 'unauthorized'}
         if user_pk:

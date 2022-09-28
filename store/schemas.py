@@ -64,19 +64,11 @@ class ItemOut(ItemSchema):
 # End
 
 
-# class CartSchema(Schema):
-#     item: List[ItemSchema]
-#     is_ordered: bool = False
-#
-#
-# # There must be CartIn and CartOut
-# class CartIn(Schema):
-#     item: List[ItemSchema]
-#     is_ordered: bool = False
-#
-#
-# class CartOut(Schema):
-#     id: int
-#     item: List[ItemSchema]
-#     is_ordered: bool = False
+class FavoriteProductIn(Schema):
+    product_id: int
+
+
+class FavoriteProductOut(Schema):
+    product: ProductSchema
+
 

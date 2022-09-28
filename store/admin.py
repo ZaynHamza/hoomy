@@ -1,10 +1,11 @@
 from django.contrib import admin
-from .models import Product, ProductImage, Category, Color, Cart
+from .models import Product, ProductImage, Category, Color, Cart, Wishlist
 
 
 admin.site.register(Category)
 admin.site.register(Color)
 admin.site.register(Cart)
+admin.site.register(Wishlist)
 
 
 class ProductImageAdmin(admin.StackedInline):

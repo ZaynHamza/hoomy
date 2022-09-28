@@ -73,8 +73,6 @@ class Product(models.Model):
     show_hide = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
 
-    is_favorite = models.BooleanField(default=False)
-
     def __str__(self):
         return self.title
 
@@ -123,7 +121,8 @@ class Cart(models.Model):
         return sum(i.product.price * i.quantity for i in self.items.all())
 
 
-# class Wishlist(models.Model):
-#     user = models.ForeignKey(to=User, verbose_name='user', related_name='favs', on_delete=models.CASCADE)
-#     product = models.ForeignKey(Product, )
+class Wishlist(models.Model):
+    user = models.ForeignKey(to=User, verbose_name='user', related_name='favs', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='product', related_name='favs', on_delete=models.CASCADE)
+    is_fav = models.BooleanField('is favorite', default=False)
 
