@@ -70,5 +70,6 @@ class FavoriteProductIn(Schema):
 
 class FavoriteProductOut(Schema):
     product: ProductSchema
+    is_fav: bool
 
 

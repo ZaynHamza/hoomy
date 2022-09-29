@@ -5,7 +5,7 @@ from .models import Product, ProductImage, Category, Color, Cart, Wishlist
 admin.site.register(Category)
 admin.site.register(Color)
 admin.site.register(Cart)
-admin.site.register(Wishlist)
+# admin.site.register(Wishlist)
 
 
 class ProductImageAdmin(admin.StackedInline):
@@ -18,8 +18,9 @@ class ProductAdmin(admin.ModelAdmin):
         return ", ".join([c.title for c in obj.colors.all()])
 
     inlines = [ProductImageAdmin]
-    list_display = ["title", "category", "price", "get_colors", "is_available", "show_hide", "is_featured"]
+    list_display = ["title", "category", "price", "get_colors", "is_available", "show_hide", "is_featured", "created", "updated"]
     list_editable = ["is_available", "show_hide", "is_featured"]
+    search_fields = ['title']
 
 
 admin.site.register(Product, ProductAdmin)

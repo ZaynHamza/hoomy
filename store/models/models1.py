@@ -48,41 +48,61 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=25)
+    title = models.CharField("اسم الفئة", max_length=25)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'فئة'
+        verbose_name_plural = 'الفئات'
 
 
 class Color(models.Model):
-    title = models.CharField(max_length=50)
-    color_code = models.CharField(max_length=20)
+    title = models.CharField("اسم اللون", max_length=50)
+    color_code = models.CharField("رمز اللون (HEX)", max_length=20)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'لون'
+        verbose_name_plural = 'الالوان'
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=50)
-    banner = models.ImageField(upload_to="banners/")
-    description = models.TextField(blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    colors = models.ManyToManyField('store.Color', verbose_name='colors', related_name='products')
-    price = models.IntegerField()
-    is_available = models.BooleanField(default=True)
-    show_hide = models.BooleanField(default=True)
-    is_featured = models.BooleanField(default=False)
+    title = models.CharField("اسم المنتج", max_length=50)
+    banner = models.ImageField("الصورة", upload_to="banners/")
+    description = models.TextField("الوصف", blank=True)
+    category = models.ForeignKey(Category, verbose_name="الفئة", on_delete=models.CASCADE)
+    colors = models.ManyToManyField('store.Color', verbose_name='الالوان', related_name='products')
+    price = models.IntegerField("السعر")
+    is_available = models.BooleanField("متوفر؟", default=True)
+    show_hide = models.BooleanField("اظهر هذا المنتج", default=True)
+    is_featured = models.BooleanField("منتج مميز", default=False)
+
+    created = models.DateTimeField("تاريخ الانشاء", editable=False, auto_now_add=True)
+    updated = models.DateTimeField("تاريخ التحديث", editable=False, auto_now=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['-updated']
+        verbose_name = 'منتج'
+        verbose_name_plural = 'المنتجات'
 
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE, related_name='product_image')
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField("صورة", upload_to='images/')
 
     def __str__(self):
         return self.product.title
+
+    class Meta:
+        verbose_name = 'صورة منتج'
+        verbose_name_plural = 'صور المنتج'
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, *args, **kwargs):
@@ -115,6 +135,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} + {self.total}"
+
+    class Meta:
+        verbose_name = 'عربة'
+        verbose_name_plural = 'العربات'
 
     @property
     def cart_total(self):
