@@ -1,19 +1,9 @@
 from ninja import Schema
 from typing import List
-# from pydantic import UUID4
 
 
 class FourOFourOut(Schema):
     detail: str
-
-
-# class UUIDSchema(Schema):
-#     id: UUID4
-
-
-# class AccountOut(Schema):
-#     id: int
-#     profile_pic: str = None
 
 
 class CategorySchema(Schema):
@@ -44,6 +34,7 @@ class ProductSchema(Schema):
     is_available: bool = True
     show_hide: bool = True
     is_featured: bool = False
+    is_fav: bool = False
     product_image: List[ProductImageSchema]
 
 
@@ -53,7 +44,6 @@ class ItemSchema(Schema):
     is_ordered: bool
 
 
-# Newly added
 class ItemCreate(Schema):
     product_id: int
     quantity: int = 1
@@ -61,7 +51,6 @@ class ItemCreate(Schema):
 
 class ItemOut(ItemSchema):
     id: int
-# End
 
 
 class FavoriteProductIn(Schema):

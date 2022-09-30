@@ -1,28 +1,9 @@
-import uuid
-
 from PIL import Image
 from django.db import models
-from hoomy.utils.models import Entity
 from django.contrib.auth import get_user_model
 
 
 """
-=================================
-Account 
-    - user*
-    - profile pic*
-=================================
-Product
-    - title
-    - banner
-    - images
-    - description
-    - category (fk)
-    - colors (fk)
-    - price
-    - is available (bool) (if false, puts out of stock label)
-    - show/hide (bool) 
-    - is featured (bool)
 =================================
 Category
     - name
@@ -31,20 +12,46 @@ Color
     - name
     - color code (hex)
 =================================
-Cart
+Product
+    - title
+    - banner
+    - description
+    - category (fk)
+    - colors (fk)
+    - price
+    - is available (bool) (if false, puts out of stock label)
+    - show/hide (bool) 
+    - is featured (bool)
+    - is fav (bool)     *hidden, created to help the frontend
+    - created (date)
+    - updated (date)
+    - images (fk)
+=================================
+Product Image
     - product (fk)
+    - image (ImageField)
+=================================
+Item
     - user (fk)
-    - is ordered boolean
+    - product (fk)
+    - quantity (int)
+    - is ordered (bool)
+=================================
+Cart
+    - user (fk)
+    - items (MtM)
+    - is ordered (bool)
+    - total (int)
+=================================
+Wishlist
+    - user (fk)
+    - product (fk)
+    - is fav (bool)
 =================================
 """
 
 
 User = get_user_model()
-
-
-# class Account(models.Model):
-#     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
-#     profile_pic = models.ImageField(upload_to="profile_pics/", blank=True)
 
 
 class Category(models.Model):
@@ -58,9 +65,16 @@ class Category(models.Model):
         verbose_name_plural = 'الفئات'
 
 
+# def validate_color(value: str):
+#     value = value.lstrip('#')
+#     value = f"0xFF{value.upper()}"
+#     print(value)
+#     return value
+
+
 class Color(models.Model):
     title = models.CharField("اسم اللون", max_length=50)
-    color_code = models.CharField("رمز اللون (HEX)", max_length=20)
+    color_code = models.CharField("رمز اللون (HEX)", max_length=12, help_text="ادخل اللون مثل: OxFF45B9EE")
 
     def __str__(self):
         return self.title
@@ -68,6 +82,20 @@ class Color(models.Model):
     class Meta:
         verbose_name = 'لون'
         verbose_name_plural = 'الالوان'
+
+    # def save(self, force_insert=False, force_update=False, using=None,
+    #          update_fields=None, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #
+    #     self.color_code = self.color_code.lstrip('#')
+    #     self.color_code = f"0xFF{self.color_code.upper()}"
+    #     print(self.color_code)
+
+    @property
+    def modify_color_code(self):
+        self.color_code = self.color_code.lstrip('#')
+        self.color_code = f"0xFF{self.color_code.upper()}"
+        return self.color_code
 
 
 class Product(models.Model):
@@ -81,6 +109,8 @@ class Product(models.Model):
     show_hide = models.BooleanField("اظهر هذا المنتج", default=True)
     is_featured = models.BooleanField("منتج مميز", default=False)
 
+    is_fav = models.BooleanField(default=False, editable=False)
+
     created = models.DateTimeField("تاريخ الانشاء", editable=False, auto_now_add=True)
     updated = models.DateTimeField("تاريخ التحديث", editable=False, auto_now=True)
 
@@ -91,6 +121,16 @@ class Product(models.Model):
         ordering = ['-updated']
         verbose_name = 'منتج'
         verbose_name_plural = 'المنتجات'
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.banner.path)
+        if img.height > 500 or img.width > 500:
+            output_size = (500, 500)
+            img.thumbnail(output_size)
+            img.save(self.banner.path)
 
 
 class ProductImage(models.Model):
@@ -122,7 +162,6 @@ class Item(models.Model):
     is_ordered = models.BooleanField('is ordered', default=False)
 
     def __str__(self):
-        # return self.product.title
         return f''
 
 
@@ -134,7 +173,7 @@ class Cart(models.Model):
     total = models.IntegerField('total', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.first_name} + {self.total}"
+        return f"{self.user.first_name}: د.ع {self.total}"
 
     class Meta:
         verbose_name = 'عربة'

@@ -20,10 +20,6 @@ class EmailAccountManager(UserManager):
 
         user.save(using=self._db)
 
-        # Had to place the import here, because it causes circular import if I did at the top
-        # from store.models import Account
-
-        # Account.objects.create(user=user, profile_pic=profile_pic)
         return user
 
     def create_superuser(self, email, password):

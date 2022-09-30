@@ -1,17 +1,12 @@
 from ninja import Router
-from ninja.security import django_auth
 from django.shortcuts import get_object_or_404
-
 from hoomy.utils.schemas import MessageOut
 from store.models import Cart, Item
-# from store.schemas import CartIn, CartOut, CartSchema, FourOFourOut
 from typing import List
-from django.db.models import Sum, Avg
-from rest_framework import status
 from django.contrib.auth import get_user_model
-
 from store.schemas import ItemOut, ItemCreate
 from hoomy.utils.decorators import check_pk
+
 
 User = get_user_model()
 
@@ -41,16 +36,13 @@ def view_cart(request):
 @check_pk
 def add_update_cart(request, item_in: ItemCreate):
     try:
-        item = Item.objects.get(product_id=item_in.product_id, user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
+        item = Item.objects.get(product_id=item_in.product_id, user=User.objects.get(id=request.auth['pk']),
                                 is_ordered=False)
-        # if item_in.quantity > 0:
-        #     item.quantity = item.quantity
-        # item.save()
         return 400, {'detail': 'Item is already in cart.'}
     except Item.DoesNotExist:
         if item_in.quantity < 1:
             return 400, {'detail': 'Quantity Value Must be Greater Than Zero'}
-        item = Item.objects.create(**item_in.dict(), user=User.objects.get(id=request.auth['pk']))  # it was auth['pk']
+        item = Item.objects.create(**item_in.dict(), user=User.objects.get(id=request.auth['pk']))
     return 200, {'detail': 'Added to cart successfully'}
 
 
@@ -61,8 +53,7 @@ def add_update_cart(request, item_in: ItemCreate):
 })
 @check_pk
 def reduce_item_quantity(request, id: int):
-    item = get_object_or_404(Item, id=id, user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
-                             is_ordered=False)
+    item = get_object_or_404(Item, id=id, user=User.objects.get(id=request.auth['pk']), is_ordered=False)
     if item.quantity <= 1:
         item.quantity = 1
         return 400, {'detail': 'Item quantity cannot be less than 1!'}
@@ -78,8 +69,7 @@ def reduce_item_quantity(request, id: int):
 })
 @check_pk
 def increase_item_quantity(request, id: int):
-    item = get_object_or_404(Item, id=id, user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
-                             is_ordered=False)
+    item = get_object_or_404(Item, id=id, user=User.objects.get(id=request.auth['pk']), is_ordered=False)
     item.quantity += 1
     item.save()
     return 200, {'detail': 'Item quantity increased successfully!'}
@@ -91,8 +81,7 @@ def increase_item_quantity(request, id: int):
 })
 @check_pk
 def delete_item(request, id: int):
-    item = get_object_or_404(Item, id=id, user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
-                             is_ordered=False)
+    item = get_object_or_404(Item, id=id, user=User.objects.get(id=request.auth['pk']), is_ordered=False)
     item.delete()
     return 204, {'detail': 'Item deleted!'}
 
@@ -104,7 +93,7 @@ def delete_item(request, id: int):
 })
 @check_pk
 def create_update_order(request):
-    user = User.objects.prefetch_related('items', 'carts').get(id=request.auth['pk'])  # it was auth['pk']
+    user = User.objects.prefetch_related('items', 'carts').get(id=request.auth['pk'])
     user_items = user.items.filter(is_ordered=False)
     if not user_items:
         return 404, {'detail': 'No Items Found To added to Order'}
@@ -129,7 +118,6 @@ def create_update_order(request):
         cart.save()
         return 200, {'detail': 'order updated successfully!'}
     except Cart.DoesNotExist:
-        # order_status, _ = OrderStatus.objects.get_or_create(title='NEW', is_default=True)
         cart = Cart.objects.create(user=user, is_ordered=False)
         cart.items.set(user_items)
         cart.total = cart.cart_total
@@ -147,7 +135,7 @@ def create_update_order(request):
 @check_pk
 def checkout_order(request):
     try:
-        cart = Cart.objects.get(user=User.objects.get(id=request.auth['pk']),  # it was auth['pk']
+        cart = Cart.objects.get(user=User.objects.get(id=request.auth['pk']),
                                 is_ordered=False)
     except Cart.DoesNotExist:
         return 404, {'detail': 'Order Doesn\'t Found'}

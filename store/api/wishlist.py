@@ -1,17 +1,11 @@
 from ninja import Router
-from ninja.security import django_auth
-from django.shortcuts import get_object_or_404
-
 from hoomy.utils.schemas import MessageOut
-from store.models import Cart, Item, Wishlist
-# from store.schemas import CartIn, CartOut, CartSchema, FourOFourOut
+from store.models import Wishlist
 from typing import List
-from django.db.models import Sum, Avg
-from rest_framework import status
 from django.contrib.auth import get_user_model
-
-from store.schemas import ItemOut, ItemCreate, FavoriteProductIn, FavoriteProductOut
+from store.schemas import FavoriteProductIn, FavoriteProductOut
 from hoomy.utils.decorators import check_pk
+
 
 User = get_user_model()
 
@@ -44,16 +38,12 @@ def add_remove_favorite(request, fav_in: FavoriteProductIn):
     try:
         fav_prod = Wishlist.objects.get(product_id=fav_in.product_id, user=User.objects.get(id=request.auth['pk']),
                                         is_fav=True)
-        # if item_in.quantity > 0:
-        #     item.quantity = item.quantity
-        # item.save()
+
         if fav_in.product_id == fav_prod.product_id:
             fav_prod.is_fav = False
             fav_prod.delete()
         return 204, {'detail': 'Removed product from wishlist.'}
     except Wishlist.DoesNotExist:
-        # if item_in.quantity < 1:
-        #     return 400, {'detail': 'Quantity Value Must be Greater Than Zero'}
         fav_prod = Wishlist.objects.create(**fav_in.dict(), user=User.objects.get(id=request.auth['pk']))
         fav_prod.is_fav = True
         fav_prod.save()
