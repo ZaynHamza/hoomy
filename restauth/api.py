@@ -64,7 +64,7 @@ def signin(request, signin_in: SigninIn):
                 'account': user
             }
         else:
-            return 403, {"message": "Wrong Password"}
+            return 403, {"detail": "Wrong Password"}
 
     if not user:
         return status.NOT_FOUND_404, {'detail': 'User is not registered'}

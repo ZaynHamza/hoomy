@@ -1,0 +1,16 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+
+{% block branding %}
+<header id="header-login" class="alt style2">
+{#    <a class="logo"><strong>HooMY</strong> <span>Adminstration</span></a>#}
+    <img src="{% static '/images/hoomy.png' %}" alt="hoomy" height="40px">
+</header>
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<link href='https://fonts.googleapis.com/css?family=Tajawal' rel='stylesheet'>
+<link rel="stylesheet" type="text/css" href="{% static 'css/override-fonts.css' %}" />
+{#<link rel="stylesheet" href="{% static 'css/adminstyle.css' %}">#}
+{% endblock %}
